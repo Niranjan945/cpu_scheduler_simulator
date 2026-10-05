@@ -1,91 +1,168 @@
-# CPU Scheduler & Memory Management Simulator
 
-A C++17 command-line simulator covering CPU scheduling algorithms and core
-virtual-memory concepts (paging with TLB + replacement policies, and
-segmentation). Built as a resume/interview project — no external
-dependencies, no ncurses, just the standard library and a Makefile.
+<div align="center">
+  
+# 🖥️ OS CPU Scheduling Simulator
+  
+![C++](https://img.shields.io/badge/Language-C++17-blue.svg)
+![Build](https://img.shields.io/badge/Build-Passing-brightgreen.svg)
+![Platform](https://img.shields.io/badge/Platform-WSL%20%2F%20Ubuntu-orange.svg)
 
-## Build & run
+> *A dynamic, object-oriented C++ simulator that models how an Operating System manages processes, featuring interactive inputs and dynamically generated Gantt charts.*
+
+</div>
+
+---
+
+## 🎬 Demo / Preview
+
+*Visualizing Shortest Remaining Time First (SRTF) Preemption:*
+
+```text
+--- SRTF (Preemptive SJF) Results ---
+PID     Arrival Burst   Completion      Waiting Turnaround
+-----------------------------------------------------------
+1       0       5       11              6       11
+2       1       2       3               0       2
+3       2       1       4               1       2
+4       4       3       7               0       3
+
+=== GANTT CHART TIMELINE ===
+-----------------------------------------
+|  P1   |  P2   |  P3   |  P4   |  P1   |
+-----------------------------------------
+0       1       3       4       7       11
 
 ```
-make          # builds ./scheduler
-./scheduler   # or: make run
-make clean    # removes obj/ and the binary
+
+---
+
+## 📖 Table of Contents
+
+* [Why Scheduling?](https://www.google.com/search?q=%23-why-scheduling)
+* [Scheduling Algorithms](https://www.google.com/search?q=%23-scheduling-algorithms)
+* [Code Architecture & OOP Design](https://www.google.com/search?q=%23-code-architecture--oop-design)
+* [File Structure](https://www.google.com/search?q=%23-file-structure)
+* [Installation & Setup](https://www.google.com/search?q=%23-installation--setup)
+* [Usage](https://www.google.com/search?q=%23-usage)
+
+---
+
+## 🤔 Why Scheduling?
+
+Imagine a busy restaurant kitchen with only one chef (the **CPU**). If 50 orders (the **processes**) come in at once, the chef needs a system to decide which meal to cook first.
+
+| Concept | Explanation |
+| --- | --- |
+| **The Problem** | Without scheduling, a heavy task (like a 45-min render) blocks quick 1-second tasks. If the CPU tries to do everything simultaneously without rules, it thrashes and finishes nothing. |
+| **How It Helps** | Scheduling maximizes CPU utilization, minimizes user wait times, and ensures fairness so no single program freezes the entire computer. |
+| **Modern OS Logic** | Modern operating systems (Windows, Linux) use complex, hybrid algorithms (like the *Completely Fair Scheduler* or *Multilevel Feedback Queues*). However, they all rely entirely on the foundational concepts simulated in this project: time-slicing, preemption, and prioritization. |
+
+---
+
+## ⚙️ Scheduling Algorithms
+
+| Algorithm | Type | Core Logic |
+| --- | --- | --- |
+| **FCFS** | ❌ Non-Preemptive | **First Come First Serve:** Strict queue. First to arrive is first to execute. |
+| **Round Robin (RR)** | ✅ Preemptive | Every process gets a strict, equal time limit (Time Quantum) on the CPU. |
+| **SJF** | ❌ Non-Preemptive | **Shortest Job First:** Executes the process with the shortest total burst time. |
+| **SRTF** | ✅ Preemptive | **Shortest Remaining Time:** Kicks the current process off if a shorter job arrives. |
+| **Priority** | ✅ Preemptive | Executes the highest priority task (Lower number = Higher Priority). |
+
+---
+
+## 🏗️ Code Architecture & OOP Design
+
+This simulator is built using strict **Object-Oriented Programming (OOP)** principles to ensure modularity and prevent state corruption during execution.
+
+| OOP Concept | Implementation in Simulator |
+| --- | --- |
+| **Inheritance** | All algorithms (`FCFS`, `RR`, etc.) inherit from a master `Manager` base class. |
+| **Polymorphism** | A unified `print_results(Manager* scheduler)` function safely accepts any algorithm dynamically. |
+| **Encapsulation** | Process tracking variables are securely managed within the `Process` Control Block (PCB). |
+
+### 🔗 Execution Flow (Linking `main.cpp`)
+
+1. **Command Center (`main.cpp`):** Acts as the entry point, collecting user inputs.
+2. **Umbrella Routing (`schedulers.h`):** A single master header routes the main file to the correct algorithm classes.
+3. **State Protection:** The `master_list` of processes is deep-copied before every run so the user can test FCFS and SRTF back-to-back on the exact same data without data corruption.
+4. **Smart Rendering (`manager.cpp`):** The base class automatically detects CPU idle time (where no processes are in the Ready Queue) and seamlessly draws `| -- |` gaps in the Gantt chart.
+
+---
+
+## 📂 File Structure
+
+```text
+.
+├── Makefile                # Build automation (g++ compilation)
+├── include/                # Header Files (.h)
+│   ├── manager.h           # Base class & Gantt entry struct
+│   ├── pcb.h               # Process Control Block struct
+│   ├── schedulers.h        # Master umbrella header
+│   └── fcfs.h, rr.h, sjf.h, sjf_p.h, psa_p.h
+├── src/                    # Implementation Files (.cpp)
+│   ├── manager.cpp         # Smart Gantt chart rendering
+│   ├── pcb.cpp             # Constructor & state resets
+│   └── fcfs.cpp, rr.cpp, sjf.cpp, sjf_p.cpp, psa_p.cpp
+├── main.cpp                # Dynamic CLI & Execution engine (Root)
+└── obj/                    # Compiled object files (Generated)
+
 ```
 
-Requires g++ with C++17 support (tested with GCC on Linux).
+---
 
-## What's inside
+## 🚀 Installation & Setup
 
-### Scheduling algorithms (`include/algorithms`, `src/algorithms`)
+This project uses `make` for streamlined compilation and is tailored for **WSL (Windows Subsystem for Linux) running Ubuntu**.
 
-| Algorithm | Type | File |
-|---|---|---|
-| FCFS | non-preemptive | `fcfs.*` |
-| SJF | non-preemptive | `sjf.*` |
-| SRTF | preemptive | `srtf.*` |
-| Priority | non-preemptive | `priority.*` |
-| Priority with aging | preemptive | `priority_aging.*` |
-| Round Robin | preemptive, quantum-based | `round_robin.*` |
-| MLFQ | preemptive, 3 feedback queues + aging | `mlfq.*` |
+### 1. Install Prerequisites
 
-Every algorithm implements the abstract `Scheduler` base class
-(`schedule()` + `getName()`) — a Strategy pattern, so `main.cpp` never
-needs to know how a given algorithm works internally. The base class also
-owns the shared bookkeeping: Gantt chart construction, average
-waiting/turnaround/response time, CPU utilization, throughput and context
-switch counting, so each algorithm file only contains the actual
-scheduling logic.
+Ensure you have the GNU C++ compiler and Make installed on your system:
 
-Run any single algorithm, or use **"Compare all algorithms"** from the
-main menu to run the same process set through every algorithm and print
-a side-by-side table of average waiting/turnaround/response time — the
-kind of comparison an interviewer will usually ask you to reason about.
+```bash
+sudo apt update
+sudo apt install g++ make git
 
-### Memory management (`include/memory`, `src/memory`)
+```
 
-- **`PageTable`** — single-level page table (valid bit, frame number).
-- **`TLB`** — small fully-associative TLB with LRU eviction, tracks hit/miss
-  ratio independently from the page table.
-- **`ReplacementAlgorithm`** — Strategy pattern again: `FIFOReplacement`,
-  `LRUReplacement`, `OptimalReplacement` (Belady's algorithm, looks ahead
-  in the reference string).
-- **`MMU`** — drives a full reference string through TLB lookup → page
-  table lookup → page fault → replacement, printing a step-by-step trace
-  (which frame each page lands in) and a final summary (fault ratio, TLB
-  hit ratio).
-- **`SegmentTable`** — classic base+limit segmentation; translates
-  `(segment_id, offset)` to a physical address or reports a segmentation
-  fault on an out-of-bounds offset.
+### 2. Clone the Repository
 
-### Process input
+Pull the code directly to your local machine:
 
-Processes can be entered manually, or loaded from `data/processes_sample.csv`
-(format: `pid,arrival_time,burst_time,priority,memory_size`).
+```bash
+git clone [https://github.com/YourUsername/OS-simulator.git](https://github.com/YourUsername/OS-simulator.git)
+cd OS-simulator
 
-## Design notes for interview discussion
+```
 
-- **Strategy pattern** used twice: `Scheduler` for CPU algorithms,
-  `ReplacementAlgorithm` for page replacement. Both let `main.cpp` add a
-  new algorithm without touching existing code (Open/Closed Principle).
-- **Preemptive algorithms (SRTF, Priority+Aging) are simulated tick-by-tick**;
-  non-preemptive ones (FCFS, SJF, Priority) jump directly from one
-  process's start to its completion, since nothing can interrupt them —
-  this is a deliberate efficiency/clarity tradeoff worth mentioning.
-- **Round Robin and MLFQ** use an explicit ready queue and re-admit new
-  arrivals before requeueing the process that was just preempted, which is
-  the standard textbook convention (matters for tie-breaking).
-- **Aging** is implemented in two places (Priority scheduling and MLFQ) to
-  bound worst-case starvation — a common follow-up interview question on
-  vanilla priority scheduling.
-- **TLB is modeled as a separate cache from the page table**, so you can
-  see TLB miss + page table hit (page in memory but not cached in TLB)
-  versus TLB miss + page fault (page not in memory at all) as distinct
-  outcomes, matching real hardware behavior.
+### 3. Compile the Code
 
-## Possible extensions
+The project utilizes a `Makefile` to link the base classes and algorithm implementations. Build the project using:
 
-- Multi-core scheduling (load balancing across N CPUs)
-- Deadlock detection (resource allocation graph)
-- Disk scheduling algorithms (FCFS/SSTF/SCAN for I/O)
-- Persisting simulation runs to a file for later comparison/plotting
+```bash
+make
+
+```
+
+---
+
+## 💻 Usage
+
+Launch the interactive Command Line Interface:
+
+```bash
+make run
+# OR
+./simulator
+
+```
+
+1. **Select an Algorithm:** Choose from the interactive menu (1-5).
+2. **Input Data:** Define the number of processes, and provide their Arrival Time, Burst Time, and Priority.
+3. **Analyze Results:** The simulator instantly calculates Completion, Waiting, and Turnaround times, followed by a precisely mapped Gantt chart timeline.
+
+---
+
+```
+http://googleusercontent.com/youtube_content/1
+
