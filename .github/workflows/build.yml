@@ -1,0 +1,63 @@
+name: C++ CI Build
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Environment
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y build-essential
+
+    - name: Compile Simulator
+      run: make
+
+    - name: Verify Build
+      run: |
+        if [ -f "./simulator" ]; then
+          echo "✅ Build successful!"
+        else
+          echo "❌ Build failed!"
+          exit 1
+        finame: C++ CI Build
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Environment
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y build-essential
+
+    - name: Compile Simulator
+      run: make
+
+    - name: Verify Build
+      run: |
+        if [ -f "./simulator" ]; then
+          echo "✅ Build successful!"
+        else
+          echo "❌ Build failed!"
+          exit 1
+        fi
