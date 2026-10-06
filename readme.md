@@ -6,7 +6,6 @@
 [![C++ CI Build](https://github.com/Niranjan945/cpu_scheduler_simulator/actions/workflows/build.yml/badge.svg)](https://github.com/Niranjan945/cpu_scheduler_simulator/actions)
 ![C++](https://img.shields.io/badge/Language-C++17-blue.svg)
 ![Platform](https://img.shields.io/badge/Platform-WSL%20%2F%20Ubuntu-orange.svg)
-![License](https://img.shields.io/badge/License-MIT-green.svg)
 
 > *A dynamic, object-oriented C++ simulator that models how an Operating System manages processes, featuring interactive inputs, Multilevel Feedback Queues, and dynamically generated Gantt charts.*
 
@@ -165,4 +164,9 @@ make run
 
 
 3. **Analyze Results:** The simulator instantly calculates Completion, Waiting, and Turnaround times, followed by a precisely mapped Gantt chart timeline.
+
+---
+
+```
+http://googleusercontent.com/youtube_content/1
 
