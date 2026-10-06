@@ -3,11 +3,12 @@
   
 # 🖥️ OS CPU Scheduling Simulator
   
+[![C++ CI Build](https://github.com/Niranjan945/cpu_scheduler_simulator/actions/workflows/build.yml/badge.svg)](https://github.com/Niranjan945/cpu_scheduler_simulator/actions)
 ![C++](https://img.shields.io/badge/Language-C++17-blue.svg)
-![Build](https://img.shields.io/badge/Build-Passing-brightgreen.svg)
 ![Platform](https://img.shields.io/badge/Platform-WSL%20%2F%20Ubuntu-orange.svg)
+![License](https://img.shields.io/badge/License-MIT-green.svg)
 
-> *A dynamic, object-oriented C++ simulator that models how an Operating System manages processes, featuring interactive inputs and dynamically generated Gantt charts.*
+> *A dynamic, object-oriented C++ simulator that models how an Operating System manages processes, featuring interactive inputs, Multilevel Feedback Queues, and dynamically generated Gantt charts.*
 
 </div>
 
@@ -68,6 +69,7 @@ Imagine a busy restaurant kitchen with only one chef (the **CPU**). If 50 orders
 | **SJF** | ❌ Non-Preemptive | **Shortest Job First:** Executes the process with the shortest total burst time. |
 | **SRTF** | ✅ Preemptive | **Shortest Remaining Time:** Kicks the current process off if a shorter job arrives. |
 | **Priority** | ✅ Preemptive | Executes the highest priority task (Lower number = Higher Priority). |
+| **MLFQ** | ✅ Preemptive | **Multilevel Feedback Queue:** Uses 3 tiered queues. Demotes processes that take too long, ensuring quick responses for short tasks. |
 
 ---
 
@@ -85,7 +87,7 @@ This simulator is built using strict **Object-Oriented Programming (OOP)** princ
 
 1. **Command Center (`main.cpp`):** Acts as the entry point, collecting user inputs.
 2. **Umbrella Routing (`schedulers.h`):** A single master header routes the main file to the correct algorithm classes.
-3. **State Protection:** The `master_list` of processes is deep-copied before every run so the user can test FCFS and SRTF back-to-back on the exact same data without data corruption.
+3. **State Protection:** The `master_list` of processes is deep-copied before every run so the user can test FCFS and MLFQ back-to-back on the exact same data without data corruption.
 4. **Smart Rendering (`manager.cpp`):** The base class automatically detects CPU idle time (where no processes are in the Ready Queue) and seamlessly draws `| -- |` gaps in the Gantt chart.
 
 ---
@@ -99,13 +101,13 @@ This simulator is built using strict **Object-Oriented Programming (OOP)** princ
 │   ├── manager.h           # Base class & Gantt entry struct
 │   ├── pcb.h               # Process Control Block struct
 │   ├── schedulers.h        # Master umbrella header
-│   └── fcfs.h, rr.h, sjf.h, sjf_p.h, psa_p.h
+│   └── fcfs.h, rr.h, sjf.h, sjf_p.h, psa_p.h, mlfq.h
 ├── src/                    # Implementation Files (.cpp)
 │   ├── manager.cpp         # Smart Gantt chart rendering
 │   ├── pcb.cpp             # Constructor & state resets
-│   └── fcfs.cpp, rr.cpp, sjf.cpp, sjf_p.cpp, psa_p.cpp
-├── main.cpp                # Dynamic CLI & Execution engine (Root)
-└── obj/                    # Compiled object files (Generated)
+│   └── fcfs.cpp, rr.cpp, sjf.cpp, sjf_p.cpp, psa_p.cpp, mlfq.cpp
+├── main.cpp                # Dynamic CLI & Execution engine
+└── .github/workflows/      # CI/CD Automated Build Pipeline
 
 ```
 
@@ -130,8 +132,8 @@ sudo apt install g++ make git
 Pull the code directly to your local machine:
 
 ```bash
-git clone [https://github.com/YourUsername/OS-simulator.git](https://github.com/YourUsername/OS-simulator.git)
-cd OS-simulator
+git clone [https://github.com/Niranjan945/cpu_scheduler_simulator.git](https://github.com/Niranjan945/cpu_scheduler_simulator.git)
+cd cpu_scheduler_simulator
 
 ```
 
@@ -157,8 +159,10 @@ make run
 
 ```
 
-1. **Select an Algorithm:** Choose from the interactive menu (1-5).
+1. **Select an Algorithm:** Choose from the interactive menu (1-6).
 2. **Input Data:** Define the number of processes, and provide their Arrival Time, Burst Time, and Priority.
+> 💡 **Pro Tip:** To streamline data entry, the CLI will ask for a Priority number for every process. However, this value is **only applied during Priority Scheduling (Option 5)**. If you are running any other algorithm, you can simply enter `0` for the priority.
+
+
 3. **Analyze Results:** The simulator instantly calculates Completion, Waiting, and Turnaround times, followed by a precisely mapped Gantt chart timeline.
 
----
