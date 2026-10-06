@@ -34,17 +34,18 @@ int main() {
         std::cout << "3. Shortest Job First (SJF - Non-Preemptive)\n";
         std::cout << "4. Shortest Remaining Time First (SRTF - Preemptive SJF)\n";
         std::cout << "5. Priority Scheduling (Preemptive)\n";
-        std::cout << "6. Exit\n";
+        std::cout << "6. Multilevel Feedback Queue (MLFQ)\n";
+        std::cout << "7. Exit\n";
         std::cout << "Enter choice: ";
         std::cin >> choice;
 
-        if (choice == 6) {
+        if (choice == 7) {
             std::cout << "Exiting Simulator. Goodbye!\n";
             break;
         }
 
-        if (choice < 1 || choice > 6) {
-            std::cout << "Invalid choice. Please enter 1-6.\n";
+        if (choice < 1 || choice > 7) {
+            std::cout << "Invalid choice. Please enter 1-7.\n";
             continue; 
         }
 
@@ -99,6 +100,12 @@ int main() {
                 scheduler.schedule(current_run);
                 print_results(&scheduler, current_run, "Priority Scheduling (Preemptive)");
                 break;
+            }
+            case 6: {
+             MLFQ scheduler;
+             scheduler.schedule(current_run);
+             print_results(&scheduler, current_run, "Multilevel Feedback Queue (Q1=2, Q2=4, Q3=FCFS)");
+             break;
             }
         }
     }

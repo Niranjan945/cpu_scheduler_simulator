@@ -162,7 +162,3 @@ make run
 3. **Analyze Results:** The simulator instantly calculates Completion, Waiting, and Turnaround times, followed by a precisely mapped Gantt chart timeline.
 
 ---
-
-```
-http://googleusercontent.com/youtube_content/1
-

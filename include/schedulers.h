@@ -7,5 +7,6 @@
 #include "sjf.h"
 #include "sjf_p.h"
 #include "psa_p.h"
+#include "mlfq.h"
 
 #endif // SCHEDULERS_H
